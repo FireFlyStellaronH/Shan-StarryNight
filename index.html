@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Magical Capricorn Night</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;overflow:hidden}
+body{
+  background:linear-gradient(#020111,#08112b,#140c2c);
+  font-family:Georgia,serif;
+  position:relative;
+}
+#sky{position:fixed;inset:0;width:100vw;height:100vh;overflow:hidden;z-index:5;pointer-events:none}
+.star{
+  position:absolute;border-radius:50%;background:#fff;
+  box-shadow:0 0 4px #fff,0 0 8px #fff,0 0 16px rgba(255,255,255,.7);
+  animation:twinkle 3s infinite;
+}
+@keyframes twinkle{0%,100%{opacity:.25}50%{opacity:1}}
+
+.moon{
+  position:absolute;top:40px;left:60px;width:190px;height:190px;
+  border-radius:50%;background:#fff;box-shadow:0 0 45px rgba(255,255,255,.6);z-index:2;
+}
+.moon:after{
+  content:"";position:absolute;width:170px;height:170px;left:48px;
+  border-radius:50%;background:#08112b;
+}
+
+.constellation{position:absolute;width:340px;height:340px;right:6%;top:13%;z-index:20}
+.constellation svg{width:100%;height:100%;overflow:visible}
+.constellation line{
+  stroke:#fff;stroke-width:2;stroke-linecap:round;
+  filter:drop-shadow(0 0 8px #fff);
+  stroke-dasharray:1;stroke-dashoffset:1;
+  transition:stroke-dashoffset .7s ease-in-out;
+}
+.cap-star{
+  position:absolute;width:12px;height:12px;border-radius:50%;background:#fff;
+  box-shadow:0 0 10px #fff,0 0 20px #fff;cursor:pointer;z-index:25;
+  opacity:0;transition:opacity 1s;
+}
+.cap-star:hover{transform:scale(1.4)}
+
+.ocean{
+  position:absolute;bottom:0;width:100%;height:30%;
+  background:linear-gradient(rgba(20,40,100,.7),rgba(5,10,40,1));z-index:2;
+}
+.wave{
+  position:absolute;width:200%;height:120px;background:rgba(255,255,255,.08);
+  border-radius:45%;animation:wave 15s linear infinite;
+}
+.wave:nth-child(1){top:-40px}
+.wave:nth-child(2){top:10px;animation-duration:20s}
+.wave:nth-child(3){top:60px;animation-duration:25s}
+@keyframes wave{from{transform:translateX(-50%)}to{transform:translateX(0)}}
+
+.firefly{
+  position:absolute;width:5px;height:5px;border-radius:50%;background:#ffff99;
+  box-shadow:0 0 15px yellow;animation:blink 3s infinite;z-index:15;
+}
+@keyframes blink{50%{opacity:.2}}
+
+.lantern{
+  position:absolute;bottom:-40px;width:20px;height:30px;background:orange;
+  border-radius:5px;box-shadow:0 0 20px orange;animation:fly 12s linear forwards;z-index:15;
+}
+@keyframes fly{to{transform:translateY(-120vh);opacity:0}}
+
+.sparkle{
+  position:absolute;width:5px;height:5px;background:#fff;border-radius:50%;
+  box-shadow:0 0 10px #fff;animation:spark 1s forwards;z-index:15;pointer-events:none;
+}
+@keyframes spark{to{transform:scale(0);opacity:0}}
+
+#musicBtn{
+  position:absolute;top:calc(20px + env(safe-area-inset-top,0px));right:20px;
+  width:50px;height:50px;border:none;border-radius:50%;
+  background:rgba(255,255,255,.2);color:#fff;font-size:22px;cursor:pointer;z-index:50;
+}
+
+#note{
+  position:fixed;inset:0;display:none;justify-content:center;align-items:center;
+  background:rgba(0,0,0,.7);z-index:9999;
+}
+.paper{
+  width:min(90vw,360px);background:#fff8dc;color:#2b2210;
+  border-radius:12px;padding:35px;position:relative;
+}
+#close{position:absolute;right:18px;top:12px;font-size:24px;cursor:pointer}
+
+@media(max-width:768px){
+  .moon{width:140px;height:140px;top:25px;left:25px}
+  .moon:after{width:125px;height:125px;left:35px}
+  .constellation{width:280px;height:280px;right:2%;top:24%}
+}
+</style>
+</head>
+<body>
+
+<div id="sky"></div>
+<div class="moon"></div>
+
+<!-- Capricornus, plotted from real RA/Dec (east on the left, north up).
+     Loop: Algedi α → θ → ι → Nashira γ → Deneb Algedi δ → ε → ζ → ω → ψ → Dabih β → back to Algedi -->
+<div class="constellation" id="constellation">
+<svg viewBox="0 0 300 300">
+<line pathLength="1" x1="277" y1="64"  x2="140" y2="120"/>
+<line pathLength="1" x1="140" y1="120" x2="94"  y2="115"/>
+<line pathLength="1" x1="94"  y1="115" x2="43"  y2="113"/>
+<line pathLength="1" x1="43"  y1="113" x2="23"  y2="107"/>
+<line pathLength="1" x1="23"  y1="107" x2="52"  y2="147"/>
+<line pathLength="1" x1="52"  y1="147" x2="81"  y2="182"/>
+<line pathLength="1" x1="81"  y1="182" x2="181" y2="236"/>
+<line pathLength="1" x1="181" y1="236" x2="197" y2="217"/>
+<line pathLength="1" x1="197" y1="217" x2="269" y2="91"/>
+<line pathLength="1" x1="269" y1="91"  x2="277" y2="64"/>
+</svg>
+</div>
+
+<div class="ocean">
+  <div class="wave"></div>
+  <div class="wave"></div>
+  <div class="wave"></div>
+</div>
+
+<audio id="music" loop>
+    <source
+        src=""
+        type="audio/mpeg">
+</audio>
+
+<button id="musicBtn">🎵</button>
+
+<div id="note">
+  <div class="paper">
+    <span id="close">✕</span>
+    <h2>A Message From The Stars ✨</h2>
+    <p id="message"></p>
+  </div>
+</div>
+
+<script>
+const sky=document.getElementById("sky");
+const stars=[];
+
+// FULL SCREEN STARS
+for(let i=0;i<500;i++){
+  const s=document.createElement("div");
+  s.className="star";
+  const size=Math.random()*3+1;
+  s.style.width=size+"px";
+  s.style.height=size+"px";
+  s.style.left=Math.random()*window.innerWidth+"px";
+  s.style.top=Math.random()*window.innerHeight+"px";
+  s.style.animationDelay=Math.random()*5+"s";
+  sky.appendChild(s);
+  stars.push(s);
+}
+
+// Capricornus stars (same order as the lines above)
+const points=[[277,64],[140,120],[94,115],[43,113],[23,107],[52,147],[81,182],[181,236],[197,217],[269,91]];
+const messages=[
+"The moon may be far away, but my love for you reaches even farther.",
+"If the universe had a heart, it would beat for the two of us.",
+"Every star in the sky pales next to the light in your eyes.",
+"I'd cross galaxies just to be where you are.",
+"You are the moonlight that softens my every night.",
+"Out of all the stars in the universe, my heart found you.",
+"The night sky is endless, but so is my love for you.",
+"Under the same moon, my heart is always beside yours.",
+"You're the constellation I'd choose to get lost in forever.",
+"Even if the stars fall silent, my love for you will keep shining."
+];
+
+const box=document.getElementById("constellation");
+const capStars=[];
+
+// Clickable stars, placed with % of the 300x300 viewBox so they always sit on the line ends
+points.forEach((p,i)=>{
+  const st=document.createElement("div");
+  st.className="cap-star";
+  st.style.left="calc("+(p[0]/3)+"% - 6px)";
+  st.style.top="calc("+(p[1]/3)+"% - 6px)";
+  st.onclick=()=>{
+    document.getElementById("message").textContent=messages[i];
+    document.getElementById("note").style.display="flex";
+  };
+  box.appendChild(st);
+  capStars.push(st);
+});
+
+// Background stars drift into the constellation shape
+setTimeout(()=>{
+  const r=box.getBoundingClientRect();
+  const k=r.width/300;
+  points.forEach((p,i)=>{
+    const s=stars[i];
+    s.style.animation="none";   // stop twinkle so it flies in fully bright
+    s.style.opacity="1";
+    s.style.transition="left 5s ease-in-out, top 5s ease-in-out, width 5s, height 5s, box-shadow 5s, opacity 1s";
+    s.style.left=(r.left+p[0]*k-6)+"px";
+    s.style.top=(r.top+p[1]*k-6)+"px";
+    s.style.width="12px";
+    s.style.height="12px";
+    s.style.boxShadow="0 0 20px white,0 0 40px white";
+  });
+},3000);
+
+// Once the stars have arrived: reveal clickable stars, hand over, trace the lines
+let traced=false;
+function traceLines(){
+  if(traced)return;
+  traced=true;
+  capStars.forEach(s=>s.style.opacity="1");
+  setTimeout(()=>{ for(let i=0;i<points.length;i++) stars[i].style.opacity="0"; },1100);
+  document.querySelectorAll(".constellation line").forEach((l,i)=>{
+    l.style.transitionDelay=(i*0.6)+"s";
+    l.style.strokeDashoffset="0";
+  });
+}
+setTimeout(traceLines,8200); // flight starts at 3s + lasts 5s
+
+document.getElementById("close").onclick=()=>{
+  document.getElementById("note").style.display="none";
+};
+document.getElementById("note").onclick=e=>{
+  if(e.target.id==="note")e.currentTarget.style.display="none";
+};
+
+// Fireflies
+for(let i=0;i<20;i++){
+  const f=document.createElement("div");
+  f.className="firefly";
+  f.style.left=Math.random()*100+"%";
+  f.style.bottom=Math.random()*20+"%";
+  f.style.animationDelay=Math.random()*5+"s";
+  document.body.appendChild(f);
+}
+
+// Lanterns
+setInterval(()=>{
+  const l=document.createElement("div");
+  l.className="lantern";
+  l.style.left=Math.random()*100+"%";
+  document.body.appendChild(l);
+  setTimeout(()=>l.remove(),12000);
+},3000);
+
+// Sparkles
+document.addEventListener("mousemove",e=>{
+  const s=document.createElement("div");
+  s.className="sparkle";
+  s.style.left=e.pageX+"px";
+  s.style.top=e.pageY+"px";
+  document.body.appendChild(s);
+  setTimeout(()=>s.remove(),1000);
+});
+
+// ---------- Music ----------
+// Uses the <audio id="music"> file when its src is filled in.
+// If src is empty, falls back to a soft generated ambient pad.
+const audio=document.getElementById("music");
+const btn=document.getElementById("musicBtn");
+const hasFile=()=>{
+  const src=audio.querySelector("source").getAttribute("src");
+  return !!(src&&src.trim());
+};
+let ctx=null,master=null,playing=false,running=false,justUnlocked=false;
+
+function startPad(){
+  ctx=new (window.AudioContext||window.webkitAudioContext)();
+  master=ctx.createGain();
+  master.gain.value=0;
+  master.connect(ctx.destination);
+  [110,165,220,277.18,329.63,440].forEach((f,i)=>{
+    const o=ctx.createOscillator(),g=ctx.createGain();
+    const lfo=ctx.createOscillator(),lg=ctx.createGain();
+    o.type="sine";o.frequency.value=f;
+    g.gain.value=0.05;
+    lfo.frequency.value=0.08+i*0.03;
+    lg.gain.value=0.03;
+    lfo.connect(lg);lg.connect(g.gain);
+    o.connect(g);g.connect(master);
+    o.start();lfo.start();
+  });
+}
+function padFade(v){
+  master.gain.cancelScheduledValues(ctx.currentTime);
+  master.gain.setValueAtTime(master.gain.value,ctx.currentTime);
+  master.gain.linearRampToValueAtTime(v,ctx.currentTime+1.5);
+}
+
+// Try to start sound. Returns true if it is actually running.
+async function play(){
+  if(hasFile()){
+    audio.load();
+    audio.volume=0.8;
+    try{await audio.play();return true;}catch(e){return false;}
+  }
+  if(!ctx)startPad();
+  try{await ctx.resume();}catch(e){}
+  if(ctx.state==="running"){padFade(0.8);return true;}
+  return false;
+}
+function stop(){
+  if(hasFile())audio.pause();
+  else if(ctx)padFade(0);
+}
+function setIcon(){btn.textContent=playing?"🔊":"🎵";}
+
+// Auto-start 3 seconds after the page opens
+setTimeout(async()=>{
+  playing=true;setIcon();
+  running=await play();
+  // Browsers may block sound until the first tap/click/key; unlock on first interaction
+  if(!running){
+    const evs=["pointerdown","touchstart","keydown"];
+    const unlock=async()=>{
+      evs.forEach(ev=>document.removeEventListener(ev,unlock));
+      if(playing&&!running){justUnlocked=true;running=await play();}
+    };
+    evs.forEach(ev=>document.addEventListener(ev,unlock));
+  }
+},3000);
+
+btn.onclick=async()=>{
+  if(justUnlocked){justUnlocked=false;return;} // this tap only unlocked the audio
+  playing=!playing;setIcon();
+  if(playing)running=await play();
+  else stop();
+};
+</script>
+
+</body>
+</html>
